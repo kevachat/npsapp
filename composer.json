@@ -1,0 +1,24 @@
+{
+    "name": "kevachat/npsapp",
+    "description": "KevaChat App for NPS Protocol",
+    "keywords": [ "kevachat", "kevacoin", "blockchain", "chat", "nps", "nps-protocol", "server" ],
+    "homepage": "https://github.com/kevachat/npsapp",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kevachat\\Npsapp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "KevaChat"
+        }
+    ],
+    "require": {
+        "kevachat/kevacoin": "^1.10",
+        "gregwar/captcha": "^1.2",
+        "ixnode/php-cli-image": "^0.1.2",
+        "yggverse/nps": "^1.3"
+    }
+}
