@@ -183,65 +183,80 @@ class Ratchet implements MessageComponentInterface
             // Check message commit by dot
             if ($request == '.')
             {
-                // Save massage to KevaCoin blockchain
-                if ($txid = $this->_kevacoin->kevaPut($this->_config->kevacoin->wallet->namespace, time(), $connection->message))
-                {
-                    // Return success response
-                    $connection->send(
-                        str_replace(
-                            [
-                                '{name}',
-                                '{txid}'
-                            ],
-                            [
-                                $this->_config->kevacoin->wallet->namespace,
-                                $txid
-                            ],
-                            implode(
-                                PHP_EOL,
-                                $config->response->submit->success
-                            ) . PHP_EOL
-                        )
-                    );
-
-                    // Print transaction debug info on enabled
-                    if ($this->_config->kevacoin->event->put->debug->enabled)
-                    {
-                        print(
-                            str_ireplace(
-                                [
-                                    '{time}',
-                                    '{host}',
-                                    '{crid}',
-                                    '{name}',
-                                    '{txid}',
-                                    '{keva}'
-                                ],
-                                [
-                                    (string) date('c'),
-                                    (string) $connection->remoteAddress,
-                                    (string) $connection->resourceId,
-                                    (string) $this->_config->kevacoin->wallet->namespace,
-                                    (string) $txid,
-                                    (string) $this->_kevacoin->getBalance(
-                                        $this->_config->kevacoin->wallet->account
-                                    )
-                                ],
-                                $this->_config->kevacoin->event->put->debug->template
-                            ) . PHP_EOL
-                        );
-                    }
-                }
-
-                // Could not receive transaction, something went wrong
-                else
+                // Check message not empty
+                if (empty(trim($connection->message)))
                 {
                     $connection->send(
                         implode(
                             PHP_EOL,
-                            $config->response->submit->failure->internal
+                            $config->response->submit->failure->empty
                         ) . PHP_EOL
                     );
+                }
+
+                // Max length already checked on input, begin message save
+                else
+                {
+                    // Save massage to KevaCoin blockchain
+                    if ($txid = $this->_kevacoin->kevaPut($this->_config->kevacoin->wallet->namespace, time(), $connection->message))
+                    {
+                        // Return success response
+                        $connection->send(
+                            str_replace(
+                                [
+                                    '{name}',
+                                    '{txid}'
+                                ],
+                                [
+                                    $this->_config->kevacoin->wallet->namespace,
+                                    $txid
+                                ],
+                                implode(
+                                    PHP_EOL,
+                                    $config->response->submit->success
+                                ) . PHP_EOL
+                            )
+                        );
+
+                        // Print transaction debug info on enabled
+                        if ($this->_config->kevacoin->event->put->debug->enabled)
+                        {
+                            print(
+                                str_ireplace(
+                                    [
+                                        '{time}',
+                                        '{host}',
+                                        '{crid}',
+                                        '{name}',
+                                        '{txid}',
+                                        '{keva}'
+                                    ],
+                                    [
+                                        (string) date('c'),
+                                        (string) $connection->remoteAddress,
+                                        (string) $connection->resourceId,
+                                        (string) $this->_config->kevacoin->wallet->namespace,
+                                        (string) $txid,
+                                        (string) $this->_kevacoin->getBalance(
+                                            $this->_config->kevacoin->wallet->account
+                                        )
+                                    ],
+                                    $this->_config->kevacoin->event->put->debug->template
+                                ) . PHP_EOL
+                            );
+                        }
+                    }
+
+                    // Could not receive transaction, something went wrong
+                    else
+                    {
+                        $connection->send(
+                            implode(
+                                PHP_EOL,
+                                $config->response->submit->failure->internal
+                            ) . PHP_EOL
+                        );
+                    }
                 }
 
                 // Close connection at this point

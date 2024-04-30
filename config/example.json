@@ -105,6 +105,10 @@
                             [
                                 "\u001b[31mReached message length limit!\u001b[0m"
                             ],
+                            "empty":
+                            [
+                                "\u001b[31mMessage could not be empty!\u001b[0m"
+                            ],
                             "internal":
                             [
                                 "\u001b[31mSomething went wrong, please make your feedback!\u001b[0m",
