@@ -107,6 +107,9 @@ class Ratchet implements MessageComponentInterface
         // Init connection counter
         $connection->count = 0;
 
+        // Init connection message
+        $connection->message = '';
+
         // Debug open event on enabled
         if ($config->event->open->debug->enabled)
         {
@@ -146,53 +149,6 @@ class Ratchet implements MessageComponentInterface
         // Init config namespace
         $config = $this->_config->nps->event->message;
 
-        // Captcha request first for unconfirmed connections
-        if (!$connection->confirmed)
-        {
-            // Request match captcha
-            if ($request == $connection->captcha)
-            {
-                $connection->confirmed = true;
-
-                $connection->send(
-                    implode(
-                        PHP_EOL,
-                        $config->response->captcha->success
-                    ) . PHP_EOL
-                );
-            }
-
-            // Captcha request invalid
-            else
-            {
-                $connection->confirmed = false;
-
-                $connection->send(
-                    implode(
-                        PHP_EOL,
-                        $config->response->captcha->failure
-                    ) . PHP_EOL
-                );
-
-                // Drop connection or do something else..
-                $connection->close();
-            }
-        }
-
-        // @TODO compose request to KevaCoin, return transaction ID
-        else
-        {
-            // Save massage to kevacoin
-            /*
-            $connection->send(
-                implode(
-                    PHP_EOL,
-                    $config->response->captcha->failure
-                ) . PHP_EOL
-            );
-            */
-        }
-
         // Debug message event on enabled
         if ($config->debug->enabled)
         {
@@ -219,6 +175,126 @@ class Ratchet implements MessageComponentInterface
                     $config->debug->template
                 ) . PHP_EOL
             );
+        }
+
+        // Connection confirmed
+        if ($connection->confirmed)
+        {
+            // Check message commit by dot
+            if ($request == '.')
+            {
+                // Save massage to KevaCoin blockchain
+                if ($txid = $this->_kevacoin->kevaPut($this->_config->kevacoin->wallet->namespace, time(), $connection->message))
+                {
+                    // Return success response
+                    $connection->send(
+                        str_replace(
+                            [
+                                '{name}',
+                                '{txid}'
+                            ],
+                            [
+                                $this->_config->kevacoin->wallet->namespace,
+                                $txid
+                            ],
+                            implode(
+                                PHP_EOL,
+                                $config->response->submit->success
+                            ) . PHP_EOL
+                        )
+                    );
+
+                    // Print transaction debug info on enabled
+                    if ($this->_config->kevacoin->event->put->debug->enabled)
+                    {
+                        print(
+                            str_ireplace(
+                                [
+                                    '{time}',
+                                    '{host}',
+                                    '{crid}',
+                                    '{name}',
+                                    '{txid}',
+                                    '{keva}'
+                                ],
+                                [
+                                    (string) date('c'),
+                                    (string) $connection->remoteAddress,
+                                    (string) $connection->resourceId,
+                                    (string) $this->_config->kevacoin->wallet->namespace,
+                                    (string) $txid,
+                                    (string) $this->_kevacoin->getBalance(
+                                        $this->_config->kevacoin->wallet->account
+                                    )
+                                ],
+                                $this->_config->kevacoin->event->put->debug->template
+                            ) . PHP_EOL
+                        );
+                    }
+                }
+
+                // Could not receive transaction, something went wrong
+                else
+                {
+                    $connection->send(
+                        implode(
+                            PHP_EOL,
+                            $config->response->submit->failure->internal
+                        ) . PHP_EOL
+                    );
+                }
+
+                // Close connection at this point
+                $connection->close();
+            }
+
+            // Complete message by new line sent
+            $connection->message .= $request . PHP_EOL;
+
+            // Check total message length limit allowed by KevaCoin protocol
+            if (mb_strlen($connection->message) > 3074)
+            {
+                $connection->send(
+                    implode(
+                        PHP_EOL,
+                        $config->response->submit->failure->length
+                    ) . PHP_EOL
+                );
+
+                $connection->close();
+            }
+        }
+
+        // Captcha request
+        else
+        {
+            // Request match captcha
+            if ($request == $connection->captcha)
+            {
+                $connection->confirmed = true;
+
+                $connection->send(
+                    implode(
+                        PHP_EOL,
+                        $config->response->captcha->success
+                    ) . PHP_EOL
+                );
+            }
+
+            // Captcha request invalid
+            else
+            {
+                $connection->confirmed = false;
+
+                $connection->send(
+                    implode(
+                        PHP_EOL,
+                        $config->response->captcha->failure
+                    ) . PHP_EOL
+                );
+
+                $connection->close();
+            }
         }
     }
 
