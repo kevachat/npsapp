@@ -98,7 +98,7 @@
                 "debug":
                 {
                     "enabled":true,
-                    "template":"[{time}] [message] {host}#{crid} captcha: {code} size: {size} bytes \n\r{sent}."
+                    "template":"[{time}] [message] {host}#{crid} captcha: {code} line: {iter} size: {size} bytes\n\r{sent}"
                 }
             },
             "close":

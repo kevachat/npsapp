@@ -104,6 +104,9 @@ class Ratchet implements MessageComponentInterface
         // Init connection confirmed
         $connection->confirmed = false;
 
+        // Init connection counter
+        $connection->count = 0;
+
         // Debug open event on enabled
         if ($config->event->open->debug->enabled)
         {
@@ -132,6 +135,14 @@ class Ratchet implements MessageComponentInterface
         \Ratchet\ConnectionInterface $connection,
         $request
     ) {
+        // Filter request
+        $request = trim(
+            $request
+        );
+
+        // Increase connection counter
+        $connection->count++;
+
         // Init config namespace
         $config = $this->_config->nps->event->message;
 
@@ -192,6 +203,7 @@ class Ratchet implements MessageComponentInterface
                         '{host}',
                         '{crid}',
                         '{code}',
+                        '{iter}',
                         '{sent}',
                         '{size}'
                     ],
@@ -200,6 +212,7 @@ class Ratchet implements MessageComponentInterface
                         (string) $connection->remoteAddress,
                         (string) $connection->resourceId,
                         (string) $connection->captcha,
+                        (string) $connection->count,
                         (string) str_replace('%', '%%', $request),
                         (string) mb_strlen($request)
                     ],
