@@ -123,6 +123,11 @@ $server->setPending(
         global $config;
         global $code;
 
+        // Filter request
+        $request = trim(
+            $request
+        );
+
         // Debug request on enabled
         if ($config->nps->action->pending->debug->enabled)
         {
@@ -146,7 +151,7 @@ $server->setPending(
                         (string) date('c'),
                         (string) parse_url($url, PHP_URL_HOST),
                         (string) parse_url($url, PHP_URL_PORT),
-                        (string) trim($request),
+                        (string) $request,
                         (string) is_null($code) ? '[off]' : $code
                     ],
                     $config->nps->action->pending->debug->template
@@ -154,8 +159,8 @@ $server->setPending(
             );
         }
 
-        return is_null($code) || $code == trim($request) ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
-                                                         : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
+        return is_null($code) || $code == $request ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
+                                                   : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
     }
 );
 
@@ -170,6 +175,11 @@ $server->setHandler(
     {
         global $config;
         global $code;
+
+        // Filter request
+        $request = trim(
+            $request
+        );
 
         // @TODO save content in blockchain with kevacoin-php
 
@@ -198,7 +208,7 @@ $server->setHandler(
                         (string) date('c'),
                         (string) parse_url($url, PHP_URL_HOST),
                         (string) parse_url($url, PHP_URL_PORT),
-                        (string) str_replace('%', '%%', trim($request)),
+                        (string) str_replace('%', '%%', $request),
                         (string) is_null($code) ? '[off]' : $code,
                         (string) mb_strlen($content),
                         (string) PHP_EOL . $content . PHP_EOL,
@@ -208,8 +218,8 @@ $server->setHandler(
             );
         }
 
-        return $success ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
-                        : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
+        return is_null($code) || $code == $request ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
+                                                   : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
     }
 );
 
