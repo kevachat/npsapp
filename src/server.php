@@ -46,10 +46,24 @@ $server->setWelcome(
             }
         }
 
+        // Build connection URL #72811
+        $url = sprintf(
+            'nex://%s',
+            $connect
+        );
+
         // Init new session
         $session[$connect] =
         [
             'time' => time(),
+            'host' => parse_url(
+                $url,
+                PHP_URL_HOST
+            ),
+            'port' => parse_url(
+                $url,
+                PHP_URL_PORT
+            ),
             'code' => null
         ];
 
@@ -85,12 +99,6 @@ $server->setWelcome(
         // Debug request on enabled
         if ($config->nps->action->welcome->debug->enabled)
         {
-            // Build connection URL #72811
-            $url = sprintf(
-                'nex://%s',
-                $connect
-            );
-
             // Print debug from template
             printf(
                 str_ireplace(
@@ -102,8 +110,8 @@ $server->setWelcome(
                     ],
                     [
                         (string) date('c'),
-                        (string) parse_url($url, PHP_URL_HOST),
-                        (string) parse_url($url, PHP_URL_PORT),
+                        (string) $session[$connect]['host'],
+                        (string) $session[$connect]['port'],
                         (string) $session[$connect]['captcha']
                     ],
                     $config->nps->action->welcome->debug->template
@@ -138,12 +146,6 @@ $server->setPending(
         // Debug request on enabled
         if ($config->nps->action->pending->debug->enabled)
         {
-            // Build connection URL #72811
-            $url = sprintf(
-                'nex://%s',
-                $connect
-            );
-
             // Print debug from template
             printf(
                 str_ireplace(
@@ -156,8 +158,8 @@ $server->setPending(
                     ],
                     [
                         (string) date('c'),
-                        (string) parse_url($url, PHP_URL_HOST),
-                        (string) parse_url($url, PHP_URL_PORT),
+                        (string) $session[$connect]['host'],
+                        (string) $session[$connect]['port'],
                         (string) $request,
                         (string) $session[$connect]['captcha']
                     ],
@@ -198,12 +200,6 @@ $server->setHandler(
         // Debug request on enabled
         if ($config->nps->action->handler->debug->enabled)
         {
-            // Build connection URL #72811
-            $url = sprintf(
-                'nex://%s',
-                $connect
-            );
-
             // Print debug from template
             printf(
                 str_ireplace(
@@ -218,8 +214,8 @@ $server->setHandler(
                     ],
                     [
                         (string) date('c'),
-                        (string) parse_url($url, PHP_URL_HOST),
-                        (string) parse_url($url, PHP_URL_PORT),
+                        (string) $session[$connect]['host'],
+                        (string) $session[$connect]['port'],
                         (string) str_replace('%', '%%', $request),
                         (string) $session[$connect]['captcha'],
                         (string) mb_strlen($content),
