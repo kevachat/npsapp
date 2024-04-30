@@ -168,8 +168,26 @@ $server->setPending(
             );
         }
 
-        return $session[$connect]['code'] == $request ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
-                                                      : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
+        // Session valid
+        if ($session[$connect]['code'] == $request)
+        {
+            // Return success message
+            return implode(
+                PHP_EOL,
+                $config->nps->action->pending->message->success
+            ) . PHP_EOL;
+        }
+
+        // @TODO disconnect, stop handler
+
+        // Cleanup session
+        unset($session[$connect]);
+
+        // Return failure message
+        return implode(
+            PHP_EOL,
+            $config->nps->action->pending->message->failure
+        ) . PHP_EOL;
     }
 );
 
@@ -195,7 +213,24 @@ $server->setHandler(
             $content
         );
 
-        // @TODO save content in blockchain with kevacoin-php
+        // Build response
+        if ($session[$connect]['code'] == $request)
+        {
+            // @TODO save content in blockchain with kevacoin-php
+
+            $response = implode(
+                PHP_EOL,
+                $config->nps->action->handler->message->success
+            ) . PHP_EOL;
+        }
+
+        else
+        {
+            $response = implode(
+                PHP_EOL,
+                $config->nps->action->handler->message->failure
+            ) . PHP_EOL;
+        }
 
         // Debug request on enabled
         if ($config->nps->action->handler->debug->enabled)
@@ -226,8 +261,11 @@ $server->setHandler(
             );
         }
 
-        return $session[$connect]['code'] == $request ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
-                                                      : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
+        // Cleanup session
+        unset($session[$connect]);
+
+        // Result
+        return $response;
     }
 );
 
