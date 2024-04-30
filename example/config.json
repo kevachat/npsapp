@@ -48,13 +48,13 @@
             {
                 "message":
                 [
-                    "Welcome to KevaChat!",
-                    "Enter captcha to confirm you are human:"
+                    "\u001b[34m\u001b[1mWelcome to KevaChat!\u001b[0m",
+                    "\u001b[34mEnter captcha to confirm you are human:\u001b[0m"
                 ],
                 "debug":
                 {
                     "enabled":true,
-                    "template":"[{time}] welcome {host}:{port} captcha: {code}"
+                    "template":"[{time}] [welcome] {host}:{port} captcha: {code}"
                 }
             },
             "pending":
@@ -63,17 +63,17 @@
                 {
                     "success":
                     [
-                        "Good, enter your message:"
+                        "\u001b[34mLooks good, now enter your message:\u001b[0m"
                     ],
                     "failure":
                     [
-                        "Something went wrong, try again later!"
+                        "\u001b[31mSomething went wrong, try again later!\u001b[0m"
                     ]
                 },
                 "debug":
                 {
                     "enabled":true,
-                    "template":"[{time}] pending {host}:{port} captcha: {code} sent: {sent}"
+                    "template":"[{time}] [pending] {host}:{port} captcha: {code} sent: {sent}"
                 }
             },
             "handler":
@@ -82,17 +82,17 @@
                 {
                     "success":
                     [
-                        "Thanks, your message successfully sent!"
+                        "\u001b[32mThanks, your message successfully sent!\u001b[0m"
                     ],
                     "failure":
                     [
-                        "Something went wrong, please make your feedback!"
+                        "\u001b[31mSomething went wrong, please make your feedback!\u001b[0m"
                     ]
                 },
                 "debug":
                 {
                     "enabled":true,
-                    "template":"[{time}] handler {host}:{port} captcha: {code} sent: {sent} length: {size} bytes {data}"
+                    "template":"[{time}] [handler] {host}:{port} captcha: {code} sent: {sent} length: {size} bytes {data}"
                 }
             }
         }
