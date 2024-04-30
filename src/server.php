@@ -211,7 +211,7 @@ $server->setHandler(
                         (string) str_replace('%', '%%', $request),
                         (string) is_null($code) ? '[off]' : $code,
                         (string) mb_strlen($content),
-                        (string) PHP_EOL . $content . PHP_EOL,
+                        (string) $content,
                     ],
                     $config->nps->action->handler->debug->template
                 ) . PHP_EOL
