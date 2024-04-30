@@ -46,8 +46,8 @@ $server->setWelcome(
         string $connect
     ): ?string
     {
-        global $config;
-        global $session;
+        global $config,
+               $session;
 
         // Cleanup expired sessions
         foreach ($session as $key => $value)
@@ -149,8 +149,8 @@ $server->setPending(
         string $connect
     ): ?string
     {
-        global $config;
-        global $session;
+        global $config,
+               $session;
 
         // Filter request
         $request = trim(
@@ -214,8 +214,8 @@ $server->setHandler(
         string $connect
     ): ?string
     {
-        global $config;
-        global $session;
+        global $config,
+               $session;
 
         // Filter request
         $request = trim(
