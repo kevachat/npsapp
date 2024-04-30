@@ -38,8 +38,14 @@
             {
                 "message":
                 {
-                    "success":"Good, enter your message:",
-                    "failure":"Something went wrong, try again later!"
+                    "success":
+                    [
+                        "Good, enter your message:"
+                    ],
+                    "failure":
+                    [
+                        "Something went wrong, try again later!"
+                    ]
                 },
                 "debug":
                 {
@@ -51,8 +57,14 @@
             {
                 "message":
                 {
-                    "success":"Thanks, your message successfully sent!",
-                    "failure":"Something went wrong, please make your feedback!"
+                    "success":
+                    [
+                        "Thanks, your message successfully sent!"
+                    ],
+                    "failure":
+                    [
+                        "Something went wrong, please make your feedback!"
+                    ]
                 },
                 "debug":
                 {

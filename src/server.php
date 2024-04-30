@@ -154,8 +154,8 @@ $server->setPending(
             );
         }
 
-        return is_null($code) || $code == trim($request) ? $config->nps->action->pending->message->success . PHP_EOL
-                                                         : $config->nps->action->pending->message->failure . PHP_EOL;
+        return is_null($code) || $code == trim($request) ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
+                                                         : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
     }
 );
 
@@ -207,8 +207,8 @@ $server->setHandler(
             );
         }
 
-        return $success ? $config->nps->action->handler->message->success . PHP_EOL
-                        : $config->nps->action->handler->message->failure . PHP_EOL;
+        return $success ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
+                        : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
     }
 );
 
