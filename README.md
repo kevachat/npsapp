@@ -12,3 +12,49 @@ To read messages, use KevaChat [webapp](https://github.com/kevachat/webapp), [ge
 * [cboden/ratchet](https://github.com/ratchetphp/Ratchet) - Asynchronous Socket server
 * [gregwar/captcha](https://github.com/Gregwar/Captcha) - Captcha library to prevent spam abuse
 * [ixnode/php-cli-image](https://github.com/ixnode/php-cli-image) - Library converts captcha to ASCII/CLI format
+
+## Install
+
+* `git clone https://github.com/kevachat/npsapp.git`
+* `cd npsapp`
+* `composer update`
+
+## Setup
+
+* `cd npsapp`
+* `cp config/example.json config/name.json` - edit connection and provide room namespace
+
+## Launch
+
+* `php src/app.php name.json` - where `name.json` argument is any config, placed at `config` folder
+
+### Autostart
+
+Launch server as the `systemd` service
+
+You can create as many servers as wanted by providing separated config for each instance!
+
+Following example require `npsapp` installed into the home directory of `npsapp` user (`useradd -m npsapp`)
+
+1. `sudo nano /etc/systemd/system/npsapp.service` - create new service:
+
+``` npsapp.service
+[Unit]
+After=network.target
+
+[Service]
+Type=simple
+User=npsapp
+Group=npsapp
+ExecStart=/usr/bin/php /home/npsapp/npsapp/src/app.php name.json
+StandardOutput=file:/home/npsapp/debug.log
+StandardError=file:/home/npsapp/error.log
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+2. `sudo systemctl daemon-reload` - reload systemd configuration
+3. `sudo systemctl enable npsapp` - enable `npsapp` service on system startup
+4. `sudo systemctl start npsapp` - start `npsapp` server
