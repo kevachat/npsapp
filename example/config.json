@@ -19,6 +19,29 @@
             "size":3072,
             "line":1024
         },
+        "session":
+        {
+            "captcha":
+            {
+                "length":3,
+                "chars":"1234567890",
+                "dimensions":
+                {
+                    "width":100,
+                    "height":40
+                },
+                "background":
+                {
+                    "r":0,
+                    "g":0,
+                    "b":0
+                },
+                "ascii":
+                {
+                    "width": 50
+                }
+            }
+        },
         "action":
         {
             "welcome":
@@ -71,27 +94,6 @@
                     "enabled":true,
                     "template":"[{time}] handler {host}:{port} captcha: {code} sent: {sent} length: {size} bytes {data}"
                 }
-            }
-        },
-        "captcha":
-        {
-            "enabled":true,
-            "length":3,
-            "chars":"1234567890",
-            "dimensions":
-            {
-                "width":100,
-                "height":40
-            },
-            "background":
-            {
-                "r":0,
-                "g":0,
-                "b":0
-            },
-            "ascii":
-            {
-                "width": 50
             }
         }
     }

@@ -15,8 +15,8 @@ $config = json_decode(
     )
 );
 
-// Init session code
-$code = null;
+// Init session
+$session = [];
 
 // Init server
 $server = new \Yggverse\Nps\Server(
@@ -33,47 +33,43 @@ $server->setWelcome(
     ): ?string
     {
         global $config;
-        global $code;
+        global $session;
 
-        // Build captcha on enabled
-        if ($config->nps->captcha->enabled)
-        {
-            $captcha = new \Gregwar\Captcha\CaptchaBuilder(
-                null,
-                new \Gregwar\Captcha\PhraseBuilder(
-                    $config->nps->captcha->length,
-                    $config->nps->captcha->chars
-                )
-            );
+        // Init session
+        $session[$connect] =
+        [
+            'time' => time(),
+            'code' => null
+        ];
 
-            $captcha->setBackgroundColor(
-                $config->nps->captcha->background->r,
-                $config->nps->captcha->background->g,
-                $config->nps->captcha->background->b
-            );
+        // Build captcha
+        $captcha = new \Gregwar\Captcha\CaptchaBuilder(
+            null,
+            new \Gregwar\Captcha\PhraseBuilder(
+                $config->nps->session->captcha->length,
+                $config->nps->session->captcha->chars
+            )
+        );
 
-            $captcha->build(
-                $config->nps->captcha->dimensions->width,
-                $config->nps->captcha->dimensions->height
-            );
+        $captcha->setBackgroundColor(
+            $config->nps->session->captcha->background->r,
+            $config->nps->session->captcha->background->g,
+            $config->nps->session->captcha->background->b
+        );
 
-            // Set captcha value to the session code
-            $code = $captcha->getPhrase();
+        $captcha->build(
+            $config->nps->session->captcha->dimensions->width,
+            $config->nps->session->captcha->dimensions->height
+        );
 
-            // Create ASCII confirmation code
-            $image = new \Ixnode\PhpCliImage\CliImage(
-                $captcha->get(),
-                $config->nps->captcha->ascii->width
-            );
+        // Set captcha value to the session code
+        $session[$connect]['captcha'] = $captcha->getPhrase();
 
-            $confirmation = PHP_EOL . $image->getAsciiString() . PHP_EOL;
-        }
-
-        else
-        {
-            $confirmation = null;
-            $code = true;
-        }
+        // Create ASCII confirmation code
+        $image = new \Ixnode\PhpCliImage\CliImage(
+            $captcha->get(),
+            $config->nps->session->captcha->ascii->width
+        );
 
         // Debug request on enabled
         if ($config->nps->action->welcome->debug->enabled)
@@ -97,7 +93,7 @@ $server->setWelcome(
                         (string) date('c'),
                         (string) parse_url($url, PHP_URL_HOST),
                         (string) parse_url($url, PHP_URL_PORT),
-                        (string) is_null($code) ? '[off]' : $code
+                        (string) $session[$connect]['captcha']
                     ],
                     $config->nps->action->welcome->debug->template
                 ) . PHP_EOL
@@ -108,7 +104,7 @@ $server->setWelcome(
             implode(
                 PHP_EOL,
                 $config->nps->action->welcome->message
-            ) . PHP_EOL . $confirmation
+            ) . PHP_EOL . $image->getAsciiString() . PHP_EOL
         );
     }
 );
@@ -121,7 +117,7 @@ $server->setPending(
     ): ?string
     {
         global $config;
-        global $code;
+        global $session;
 
         // Filter request
         $request = trim(
@@ -152,15 +148,15 @@ $server->setPending(
                         (string) parse_url($url, PHP_URL_HOST),
                         (string) parse_url($url, PHP_URL_PORT),
                         (string) $request,
-                        (string) is_null($code) ? '[off]' : $code
+                        (string) $session[$connect]['captcha']
                     ],
                     $config->nps->action->pending->debug->template
                 ) . PHP_EOL
             );
         }
 
-        return is_null($code) || $code == $request ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
-                                                   : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
+        return $session[$connect]['captcha'] == $request ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
+                                                         : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
     }
 );
 
@@ -174,11 +170,16 @@ $server->setHandler(
     ): ?string
     {
         global $config;
-        global $code;
+        global $session;
 
         // Filter request
         $request = trim(
             $request
+        );
+
+        // Filter content
+        $content = trim(
+            $content
         );
 
         // @TODO save content in blockchain with kevacoin-php
@@ -209,17 +210,17 @@ $server->setHandler(
                         (string) parse_url($url, PHP_URL_HOST),
                         (string) parse_url($url, PHP_URL_PORT),
                         (string) str_replace('%', '%%', $request),
-                        (string) is_null($code) ? '[off]' : $code,
+                        (string) $session[$connect]['captcha'],
                         (string) mb_strlen($content),
-                        (string) $content,
+                        (string) PHP_EOL . $content,
                     ],
                     $config->nps->action->handler->debug->template
                 ) . PHP_EOL
             );
         }
 
-        return is_null($code) || $code == $request ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
-                                                   : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
+        return $session[$connect]['captcha'] == $request ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
+                                                         : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
     }
 );
 
