@@ -11,9 +11,12 @@ $config = json_decode(
     file_get_contents(
         __DIR__ .
         DIRECTORY_SEPARATOR . '..'.
-        DIRECTORY_SEPARATOR . 'config.json'
+        DIRECTORY_SEPARATOR . 'config'.
+        DIRECTORY_SEPARATOR . (
+            isset($argv[1]) ? $argv[1] : 'example.json'
+        )
     )
-);
+);  if (!$config) exit;
 
 // Init session
 $session = [];

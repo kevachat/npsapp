@@ -1,3 +1,5 @@
 /vendor/
+/config/*
+!/config/example.json
+
 /composer.lock
-/config.json
