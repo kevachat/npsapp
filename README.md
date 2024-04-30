@@ -1,6 +1,6 @@
 # npsapp
 
-KevaChat Application for [NPS Protocol](https://nightfall.city/nps/info/specification.txt)
+KevaChat Server for [NPS Protocol](https://nightfall.city/nps/info/specification.txt)
 
 Listen connections on `1915` port and save messages to given `namespace` in [KevaCoin](https://github.com/kevacoin-project) blockchain
 
