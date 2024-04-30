@@ -69,7 +69,7 @@
                 "debug":
                 {
                     "enabled":true,
-                    "template":"[{time}] [{code}] {host}:{port} {path} {size} bytes {data}"
+                    "template":"[{time}] {host}:{port} captcha: {code} sent: {sent} length: {size} bytes {data}"
                 }
             }
         },

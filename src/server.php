@@ -169,6 +169,7 @@ $server->setHandler(
     ): ?string
     {
         global $config;
+        global $code;
 
         // @TODO save content in blockchain with kevacoin-php
 
@@ -188,7 +189,8 @@ $server->setHandler(
                         '{time}',
                         '{host}',
                         '{port}',
-                        '{path}',
+                        '{sent}',
+                        '{code}',
                         '{size}',
                         '{data}'
                     ],
@@ -196,7 +198,8 @@ $server->setHandler(
                         (string) date('c'),
                         (string) parse_url($url, PHP_URL_HOST),
                         (string) parse_url($url, PHP_URL_PORT),
-                        (string) str_replace('%', '%%', $request),
+                        (string) str_replace('%', '%%', trim($request)),
+                        (string) is_null($code) ? '[off]' : $code,
                         (string) mb_strlen($content),
                         (string) PHP_EOL . $content . PHP_EOL,
                     ],
