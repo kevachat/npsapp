@@ -186,7 +186,6 @@ $server->setHandler(
                 str_ireplace(
                     [
                         '{time}',
-                        '{code}',
                         '{host}',
                         '{port}',
                         '{path}',
@@ -195,7 +194,6 @@ $server->setHandler(
                     ],
                     [
                         (string) date('c'),
-                        (string) (int) is_string($response),
                         (string) parse_url($url, PHP_URL_HOST),
                         (string) parse_url($url, PHP_URL_PORT),
                         (string) str_replace('%', '%%', $request),
