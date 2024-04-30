@@ -354,7 +354,7 @@ class Ratchet implements MessageComponentInterface
                         (string) date('c'),
                         (string) $connection->remoteAddress,
                         (string) $connection->resourceId,
-                        (string) str_replace('%', '%%', $exception->getMessage())
+                        (string) $exception->getMessage()
                     ],
                     $this->_config->nps->event->error->debug->template
                 ) . PHP_EOL
