@@ -35,7 +35,18 @@ $server->setWelcome(
         global $config;
         global $session;
 
-        // Init session
+        // Cleanup expired sessions
+        foreach ($session as $key => $value)
+        {
+            if ($value['time'] + $config->nps->session->timeout < time())
+            {
+                unset(
+                    $session[$key]
+                );
+            }
+        }
+
+        // Init new session
         $session[$connect] =
         [
             'time' => time(),

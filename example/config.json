@@ -21,6 +21,7 @@
         },
         "session":
         {
+            "timeout":3600,
             "captcha":
             {
                 "length":3,
