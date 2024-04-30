@@ -19,6 +19,6 @@
         "kevachat/kevacoin": "^1.10",
         "gregwar/captcha": "^1.2",
         "ixnode/php-cli-image": "^0.1.2",
-        "yggverse/nps": "^1.3"
+        "cboden/ratchet": "^0.4.4"
     }
 }
