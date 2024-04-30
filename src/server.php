@@ -88,7 +88,7 @@ $server->setWelcome(
         );
 
         // Set captcha value to the session code
-        $session[$connect]['captcha'] = $captcha->getPhrase();
+        $session[$connect]['code'] = $captcha->getPhrase();
 
         // Create ASCII confirmation code
         $image = new \Ixnode\PhpCliImage\CliImage(
@@ -112,7 +112,7 @@ $server->setWelcome(
                         (string) date('c'),
                         (string) $session[$connect]['host'],
                         (string) $session[$connect]['port'],
-                        (string) $session[$connect]['captcha']
+                        (string) $session[$connect]['code']
                     ],
                     $config->nps->action->welcome->debug->template
                 ) . PHP_EOL
@@ -161,15 +161,15 @@ $server->setPending(
                         (string) $session[$connect]['host'],
                         (string) $session[$connect]['port'],
                         (string) $request,
-                        (string) $session[$connect]['captcha']
+                        (string) $session[$connect]['code']
                     ],
                     $config->nps->action->pending->debug->template
                 ) . PHP_EOL
             );
         }
 
-        return $session[$connect]['captcha'] == $request ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
-                                                         : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
+        return $session[$connect]['code'] == $request ? implode(PHP_EOL, $config->nps->action->pending->message->success) . PHP_EOL
+                                                      : implode(PHP_EOL, $config->nps->action->pending->message->failure) . PHP_EOL;
     }
 );
 
@@ -217,7 +217,7 @@ $server->setHandler(
                         (string) $session[$connect]['host'],
                         (string) $session[$connect]['port'],
                         (string) str_replace('%', '%%', $request),
-                        (string) $session[$connect]['captcha'],
+                        (string) $session[$connect]['code'],
                         (string) mb_strlen($content),
                         (string) PHP_EOL . $content,
                     ],
@@ -226,8 +226,8 @@ $server->setHandler(
             );
         }
 
-        return $session[$connect]['captcha'] == $request ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
-                                                         : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
+        return $session[$connect]['code'] == $request ? implode(PHP_EOL, $config->nps->action->handler->message->success) . PHP_EOL
+                                                      : implode(PHP_EOL, $config->nps->action->handler->message->failure) . PHP_EOL;
     }
 );
 
