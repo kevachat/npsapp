@@ -8,6 +8,11 @@
             "port":9992,
             "username":"",
             "password":""
+        },
+        "wallet":
+        {
+            "namespace":"",
+            "account":null
         }
     },
     "nps":
@@ -45,6 +50,14 @@
         },
         "action":
         {
+            "start":
+            {
+                "debug":
+                {
+                    "enabled":true,
+                    "template":"[{time}] server started at {host}:{port} balance: {keva}"
+                }
+            },
             "welcome":
             {
                 "message":

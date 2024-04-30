@@ -18,6 +18,17 @@ $config = json_decode(
     )
 );  if (!$config) exit;
 
+// Init KevaCoin
+$kevacoin = new \Kevachat\Kevacoin\Client(
+    $config->kevacoin->server->protocol,
+    $config->kevacoin->server->host,
+    $config->kevacoin->server->port,
+    $config->kevacoin->server->username,
+    $config->kevacoin->server->password
+);
+
+if ((float) $kevacoin->getBalance($config->kevacoin->wallet->account) <= 0) exit;
+
 // Init session
 $session = [];
 
@@ -103,7 +114,7 @@ $server->setWelcome(
         if ($config->nps->action->welcome->debug->enabled)
         {
             // Print debug from template
-            printf(
+            print(
                 str_ireplace(
                     [
                         '{time}',
@@ -150,7 +161,7 @@ $server->setPending(
         if ($config->nps->action->pending->debug->enabled)
         {
             // Print debug from template
-            printf(
+            print(
                 str_ireplace(
                     [
                         '{time}',
@@ -239,7 +250,7 @@ $server->setHandler(
         if ($config->nps->action->handler->debug->enabled)
         {
             // Print debug from template
-            printf(
+            print(
                 str_ireplace(
                     [
                         '{time}',
@@ -273,4 +284,27 @@ $server->setHandler(
 );
 
 // Start server
+if ($config->nps->action->start->debug->enabled)
+{
+    print(
+        str_ireplace(
+            [
+                '{time}',
+                '{host}',
+                '{port}',
+                '{keva}'
+            ],
+            [
+                date('c'),
+                $config->nps->server->host,
+                $config->nps->server->port,
+                $kevacoin->getBalance(
+                    $config->kevacoin->wallet->account
+                )
+            ],
+            $config->nps->action->start->debug->template
+        ) . PHP_EOL
+    );
+}
+
 $server->start();
