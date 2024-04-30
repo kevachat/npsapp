@@ -73,7 +73,7 @@
                     {
                         "success":
                         [
-                            "\u001b[34mGood, now enter your message!\u001b[0m"
+                            "\u001b[34mGood, enter your message (commit by dot)\u001b[0m"
                         ],
                         "failure":
                         [
