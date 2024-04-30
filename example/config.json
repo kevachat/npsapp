@@ -1,0 +1,86 @@
+{
+    "kevacoin":
+    {
+        "server":
+        {
+            "protocol":"http",
+            "host":"127.0.0.1",
+            "port":9992,
+            "username":"",
+            "password":""
+        }
+    },
+    "nps":
+    {
+        "server":
+        {
+            "host":"127.0.0.1",
+            "port":1915,
+            "size":3072,
+            "line":1024
+        },
+        "action":
+        {
+            "welcome":
+            {
+                "message":
+                [
+                    "Welcome to KevaChat!",
+                    "Enter captcha to confirm you are human:"
+                ],
+                "debug":
+                {
+                    "enabled":true,
+                    "template":"[{time}] connected {host}:{port} captcha: {code}"
+                }
+            },
+            "pending":
+            {
+                "message":
+                {
+                    "success":"Good, enter your message:",
+                    "failure":"Something went wrong, try again later!"
+                },
+                "debug":
+                {
+                    "enabled":true,
+                    "template":"[{time}] connected {host}:{port} captcha: {code} sent: {sent}"
+                }
+            },
+            "handler":
+            {
+                "message":
+                {
+                    "success":"Thanks, your message successfully sent!",
+                    "failure":"Something went wrong, please make your feedback!"
+                },
+                "debug":
+                {
+                    "enabled":true,
+                    "template":"[{time}] [{code}] {host}:{port} {path} {size} bytes {data}"
+                }
+            }
+        },
+        "captcha":
+        {
+            "enabled":true,
+            "length":3,
+            "chars":"1234567890",
+            "dimensions":
+            {
+                "width":100,
+                "height":40
+            },
+            "background":
+            {
+                "r":0,
+                "g":0,
+                "b":0
+            },
+            "ascii":
+            {
+                "width": 80
+            }
+        }
+    }
+}
