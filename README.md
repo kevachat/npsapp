@@ -63,6 +63,6 @@ WantedBy=multi-user.target
 
 ## Clients
 
-* `nc 127.0.0.1 1915` - IPv4 only
-* `ncat 127.0.0.1 1915` - IPv4/6, UTF-8 support
-* `telnet 127.0.0.1 1915` - IPv4/6, may cause issues with cyrillic messages
+* `nc 127.0.0.1 1915` - IPv4 only, install `netcat-openbsd` to add IPv6 support
+* `ncat 127.0.0.1 1915`
+* `telnet 127.0.0.1 1915`
