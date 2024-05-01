@@ -66,3 +66,7 @@ WantedBy=multi-user.target
 * `nc 127.0.0.1 1915` - IPv4 only, install `netcat-openbsd` to add IPv6 support
 * `ncat 127.0.0.1 1915`
 * `telnet 127.0.0.1 1915`
+
+## Servers
+
+* `[201:23b4:991a:634d:8359:4521:5576:15b7]:1915` - [Yggdrasil](https://github.com/yggdrasil-network) instance by [YGGverse](https://github.com/YGGverse)
