@@ -97,7 +97,7 @@
                         [
                             "\u001b[34mThanks, your message successfully sent!\u001b[0m",
                             "\u001b[35mNS:{name}\u001b[0m",
-                            "\u001b[35mID:{txid}\u001b[0m"
+                            "\u001b[35mTX:{txid}\u001b[0m"
                         ],
                         "failure":
                         {
