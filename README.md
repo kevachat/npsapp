@@ -11,7 +11,7 @@ To read messages, use KevaChat [webapp](https://github.com/kevachat/webapp), [ge
 * [kevachat/kevacoin-php](https://github.com/kevachat/kevacoin-php) - KevaCoin library for PHP 8
 * [cboden/ratchet](https://github.com/ratchetphp/Ratchet) - Asynchronous Socket server
 * [gregwar/captcha](https://github.com/Gregwar/Captcha) - Captcha library to prevent spam abuse
-* [ixnode/php-cli-image](https://github.com/ixnode/php-cli-image) - Library converts captcha to ASCII/CLI format
+* [ixnode/php-cli-image](https://github.com/ixnode/php-cli-image) - Library converts captcha to ASCII format
 
 ## Install
 
