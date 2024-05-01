@@ -109,6 +109,10 @@
                             [
                                 "\u001b[31mMessage could not be empty!\u001b[0m"
                             ],
+                            "encoding":
+                            [
+                                "\u001b[31mInvalid message encoding!\u001b[0m"
+                            ],
                             "internal":
                             [
                                 "\u001b[31mSomething went wrong, please make your feedback!\u001b[0m",

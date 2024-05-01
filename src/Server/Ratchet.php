@@ -194,6 +194,17 @@ class Ratchet implements MessageComponentInterface
                     );
                 }
 
+                // Check message encoding valid
+                else if (!mb_check_encoding($connection->message, 'UTF-8'))
+                {
+                    $connection->send(
+                        implode(
+                            PHP_EOL,
+                            $config->response->submit->failure->encoding
+                        ) . PHP_EOL
+                    );
+                }
+
                 // Max length already checked on input, begin message save
                 else
                 {
