@@ -59,7 +59,8 @@ WantedBy=multi-user.target
 3. `sudo systemctl enable npsapp` - enable `npsapp` service on system startup
 4. `sudo systemctl start npsapp` - start `npsapp` server
 
-## Use
+## Usage
 
-* `nc 127.0.0.1 1915`
-* `telnet 127.0.0.1 1915`
+* `nc 127.0.0.1 1915` - IPv4 only
+* `ncat 127.0.0.1 1915` - IPv4/6, UTF-8 support
+* `telnet 127.0.0.1 1915` - IPv4/6, may cause issues with cyrillic messages
