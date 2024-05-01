@@ -10,6 +10,8 @@ class Ratchet implements MessageComponentInterface
 
     private object $_config;
 
+    private array $_namespaces;
+
     public function __construct(
         object $config
     ) {
@@ -31,6 +33,50 @@ class Ratchet implements MessageComponentInterface
             throw new \Exception(); // @TODO
         }
 
+        // Init allowed chat rooms registry
+        if ($namespaces = $this->_kevacoin->kevaListNamespaces())
+        {
+            $i = 1; foreach ((array) $namespaces as $namespace)
+            {
+                // Skip system namespaces
+                if (str_starts_with($namespace['displayName'], '_'))
+                {
+                    continue;
+                }
+
+                // Skip blacklist
+                if (in_array($namespace['namespaceId'], $this->_config->kevacoin->wallet->namespace->blacklist))
+                {
+                    continue;
+                }
+
+                // Check whitelist on contain records
+                if (count($this->_config->kevacoin->wallet->namespace->whitelist) &&
+                   !in_array($namespace['namespaceId'], $this->_config->kevacoin->wallet->namespace->whitelist))
+                {
+                    continue;
+                }
+
+                // Append room to the namespace registry
+                $this->_namespaces[$i++] = [
+                    'hash' => $namespace['namespaceId'],
+                    'name' => $namespace['displayName']
+                ];
+            }
+
+            // Sort rooms by name ASC
+            array_multisort(
+                array_column(
+                    $this->_namespaces,
+                    'name'
+                ),
+                SORT_ASC,
+                SORT_STRING | SORT_NATURAL | SORT_FLAG_CASE
+            );
+        }
+
+        else throw new \Exception(); // @TODO
+
         // Dump event on enabled
         if ($this->_config->nps->event->init->debug->enabled)
         {
@@ -40,7 +86,8 @@ class Ratchet implements MessageComponentInterface
                         '{time}',
                         '{host}',
                         '{port}',
-                        '{keva}'
+                        '{keva}',
+                        '{room}'
                     ],
                     [
                         (string) date('c'),
@@ -48,6 +95,10 @@ class Ratchet implements MessageComponentInterface
                         (string) $this->_config->nps->server->port,
                         (float) $this->_kevacoin->getBalance(
                             $this->_config->kevacoin->wallet->account
+                        ),
+                        (string) print_r(
+                            $this->_namespaces,
+                            true
                         )
                     ],
                     $this->_config->nps->event->init->debug->template
@@ -103,6 +154,9 @@ class Ratchet implements MessageComponentInterface
 
         // Init connection confirmed
         $connection->confirmed = false;
+
+        // Init connection room
+        $connection->namespace = null;
 
         // Init connection counter
         $connection->count = 0;
@@ -180,140 +234,215 @@ class Ratchet implements MessageComponentInterface
         // Connection confirmed
         if ($connection->confirmed)
         {
-            // Check message commit by dot
-            if ($request == '.')
+            // Room selected, begin message compose
+            if ($connection->namespace)
             {
-                // Check message not empty
-                if (empty(trim($connection->message)))
+                // Check message commit by dot
+                if ($request == '.')
                 {
-                    $connection->send(
-                        implode(
-                            PHP_EOL,
-                            $config->response->submit->failure->empty
-                        ) . PHP_EOL
-                    );
-                }
-
-                // Max length already checked on input, begin message save
-                else
-                {
-                    // Save massage to KevaCoin blockchain
-                    if ($txid = $this->_kevacoin->kevaPut($this->_config->kevacoin->wallet->namespace, time(), $connection->message))
+                    // Check message not empty
+                    if (empty(trim($connection->message)))
                     {
-                        // Return success response
                         $connection->send(
-                            str_ireplace(
-                                [
-                                    '{name}',
-                                    '{txid}'
-                                ],
-                                [
-                                    (string) $this->_config->kevacoin->wallet->namespace,
-                                    (string) $txid
-                                ],
-                                implode(
-                                    PHP_EOL,
-                                    $config->response->submit->success
-                                ) . PHP_EOL
-                            )
+                            implode(
+                                PHP_EOL,
+                                $config->response->submit->failure->empty
+                            ) . PHP_EOL
                         );
+                    }
 
-                        // Print transaction debug info on enabled
-                        if ($this->_config->kevacoin->event->put->debug->enabled)
+                    // Max length already checked on input, begin message save
+                    else
+                    {
+                        // Save massage to KevaCoin blockchain
+                        if ($txid = $this->_kevacoin->kevaPut($connection->namespace, time(), $connection->message))
                         {
-                            print(
+                            // Return success response
+                            $connection->send(
                                 str_ireplace(
                                     [
-                                        '{time}',
-                                        '{host}',
-                                        '{crid}',
                                         '{name}',
-                                        '{txid}',
-                                        '{keva}'
+                                        '{txid}'
                                     ],
                                     [
-                                        (string) date('c'),
-                                        (string) $connection->remoteAddress,
-                                        (string) $connection->resourceId,
-                                        (string) $this->_config->kevacoin->wallet->namespace,
-                                        (string) $txid,
-                                        (string) $this->_kevacoin->getBalance(
-                                            $this->_config->kevacoin->wallet->account
-                                        )
+                                        (string) $connection->namespace,
+                                        (string) $txid
                                     ],
-                                    $this->_config->kevacoin->event->put->debug->template
+                                    implode(
+                                        PHP_EOL,
+                                        $config->response->submit->success
+                                    ) . PHP_EOL
+                                )
+                            );
+
+                            // Print transaction debug info on enabled
+                            if ($this->_config->kevacoin->event->put->debug->enabled)
+                            {
+                                print(
+                                    str_ireplace(
+                                        [
+                                            '{time}',
+                                            '{host}',
+                                            '{crid}',
+                                            '{name}',
+                                            '{txid}',
+                                            '{keva}'
+                                        ],
+                                        [
+                                            (string) date('c'),
+                                            (string) $connection->remoteAddress,
+                                            (string) $connection->resourceId,
+                                            (string) $connection->namespace,
+                                            (string) $txid,
+                                            (string) $this->_kevacoin->getBalance(
+                                                $this->_config->kevacoin->wallet->account
+                                            )
+                                        ],
+                                        $this->_config->kevacoin->event->put->debug->template
+                                    ) . PHP_EOL
+                                );
+                            }
+                        }
+
+                        // Could not receive transaction, something went wrong
+                        else
+                        {
+                            $connection->send(
+                                implode(
+                                    PHP_EOL,
+                                    $config->response->submit->failure->internal
                                 ) . PHP_EOL
                             );
                         }
                     }
 
-                    // Could not receive transaction, something went wrong
-                    else
-                    {
-                        $connection->send(
-                            implode(
-                                PHP_EOL,
-                                $config->response->submit->failure->internal
-                            ) . PHP_EOL
-                        );
-                    }
+                    // Close connection at this point
+                    $connection->close();
                 }
 
-                // Close connection at this point
-                $connection->close();
+                // Complete message by new line sent
+                $connection->message .= $request . PHP_EOL;
+
+                // Check message encoding valid
+                if (!mb_check_encoding($connection->message, 'UTF-8'))
+                {
+                    $connection->send(
+                        implode(
+                            PHP_EOL,
+                            $config->response->submit->failure->encoding
+                        ) . PHP_EOL
+                    );
+
+                    $connection->close();
+                }
+
+                // Check total message length limit allowed by KevaCoin protocol
+                if (mb_strlen($connection->message) > 3074)
+                {
+                    $connection->send(
+                        implode(
+                            PHP_EOL,
+                            $config->response->submit->failure->length
+                        ) . PHP_EOL
+                    );
+
+                    $connection->close();
+                }
             }
 
-            // Complete message by new line sent
-            $connection->message .= $request . PHP_EOL;
-
-            // Check message encoding valid
-            if (!mb_check_encoding($connection->message, 'UTF-8'))
+            // Room not selected yet and number given match registry
+            else if (isset($this->_namespaces[$request]))
             {
+                // Update connection namespace
+                $connection->namespace = $this->_namespaces[$request]['hash'];
+
+                // Send room selection request
+                $connection->send(
+                    str_ireplace(
+                        [
+                            '{room}'
+                        ],
+                        [
+                            str_replace( // filter possible meta mask in the room names
+                                '%',
+                                '%%',
+                                $this->_namespaces[$request]['name']
+                            )
+                        ],
+                        implode(
+                            PHP_EOL,
+                            $config->response->room->success
+                        ) . PHP_EOL
+                    )
+                );
+            }
+
+            // Room number not found in registry
+            else
+            {
+                // Reset connection room anyway
+                $connection->namespace = null;
+
+                // Send fail response
                 $connection->send(
                     implode(
                         PHP_EOL,
-                        $config->response->submit->failure->encoding
+                        $config->response->room->failure
                     ) . PHP_EOL
                 );
 
-                $connection->close();
-            }
-
-            // Check total message length limit allowed by KevaCoin protocol
-            if (mb_strlen($connection->message) > 3074)
-            {
-                $connection->send(
-                    implode(
-                        PHP_EOL,
-                        $config->response->submit->failure->length
-                    ) . PHP_EOL
-                );
-
-                $connection->close();
+                // Keep connection alive for new attempt..
             }
         }
 
-        // Captcha request
+        // Captcha confirmation code expected
         else
         {
             // Request match captcha
             if ($request == $connection->captcha)
             {
+                // Set connection confirmed
                 $connection->confirmed = true;
 
+                // Build room list
+                $rooms = [];
+
+                foreach ($this->_namespaces as $number => $namespace)
+                {
+                    $rooms[] = sprintf(
+                        '[%d] %s',
+                        $number,
+                        $namespace['name']
+                    );
+                }
+
+                // Send room selection request
                 $connection->send(
-                    implode(
-                        PHP_EOL,
-                        $config->response->captcha->success
-                    ) . PHP_EOL
+                    str_ireplace(
+                        [
+                            '{room:list}'
+                        ],
+                        [
+                            implode(
+                                PHP_EOL,
+                                $rooms
+                            )
+                        ],
+                        implode(
+                            PHP_EOL,
+                            $config->response->captcha->success
+                        ) . PHP_EOL
+                    )
                 );
             }
 
             // Captcha request invalid
             else
             {
+                // Reset confirmed status
                 $connection->confirmed = false;
 
+                // Send fail response
                 $connection->send(
                     implode(
                         PHP_EOL,
@@ -321,6 +450,7 @@ class Ratchet implements MessageComponentInterface
                     ) . PHP_EOL
                 );
 
+                // Drop connection to prevent brute force
                 $connection->close();
             }
         }

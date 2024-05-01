@@ -11,7 +11,11 @@
         },
         "wallet":
         {
-            "namespace":"",
+            "namespace":
+            {
+                "whitelist":[],
+                "blacklist":[]
+            },
             "account":null
         },
         "event":
@@ -60,7 +64,7 @@
                 "debug":
                 {
                     "enabled":true,
-                    "template":"[{time}] [init] listen on {host}:{port} balance: {keva}"
+                    "template":"[{time}] [init] listen on {host}:{port} balance: {keva} allowed: {room}"
                 }
             },
             "open":
@@ -84,11 +88,24 @@
                     {
                         "success":
                         [
-                            "\u001b[34mWell, enter your message (dot to commit)\u001b[0m"
+                            "\u001b[34mWell, select room number\u001b[0m",
+                            "\u001b[35m{room:list}\u001b[0m"
                         ],
                         "failure":
                         [
                             "\u001b[31mIncorrect captcha code, try again later!\u001b[0m"
+                        ]
+                    },
+                    "room":
+                    {
+                        "success":
+                        [
+                            "\u001b[34mRoom changed to \u001b[35m{room}\u001b[0m",
+                            "\u001b[34mEnter your message (dot to commit)\u001b[0m"
+                        ],
+                        "failure":
+                        [
+                            "\u001b[31mRequested room number not found, try again!\u001b[0m"
                         ]
                     },
                     "submit":
