@@ -4,7 +4,7 @@ KevaChat Server for [NPS Protocol](https://nightfall.city/nps/info/specification
 
 Listen connections on `1915` port and save messages to given `namespace` in [KevaCoin](https://github.com/kevacoin-project) blockchain
 
-![kevachat/npsapp](https://github.com/kevachat/npsapp/assets/108541346/36f8c2c2-197b-4f0f-9596-e92528293dfc)
+![kevachat/npsapp](https://github.com/kevachat/npsapp/assets/108541346/936191f7-7ea7-44bd-bcd9-085f2a7f0a7b)
 
 To read messages, use KevaChat [webapp](https://github.com/kevachat/webapp), [geminiapp](https://github.com/kevachat/geminiapp) or any [KevaCoin explorer](https://github.com/kvazar-network/awesome-kevacoin#explorers)!
 
