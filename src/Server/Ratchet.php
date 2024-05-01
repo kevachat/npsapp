@@ -71,7 +71,8 @@ class Ratchet implements MessageComponentInterface
                     'name'
                 ),
                 SORT_ASC,
-                SORT_STRING | SORT_NATURAL | SORT_FLAG_CASE
+                SORT_STRING | SORT_NATURAL | SORT_FLAG_CASE,
+                $this->_namespaces
             );
         }
 
