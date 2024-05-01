@@ -194,17 +194,6 @@ class Ratchet implements MessageComponentInterface
                     );
                 }
 
-                // Check message encoding valid
-                else if (!mb_check_encoding($connection->message, 'UTF-8'))
-                {
-                    $connection->send(
-                        implode(
-                            PHP_EOL,
-                            $config->response->submit->failure->encoding
-                        ) . PHP_EOL
-                    );
-                }
-
                 // Max length already checked on input, begin message save
                 else
                 {
@@ -276,6 +265,19 @@ class Ratchet implements MessageComponentInterface
 
             // Complete message by new line sent
             $connection->message .= $request . PHP_EOL;
+
+            // Check message encoding valid
+            if (!mb_check_encoding($connection->message, 'UTF-8'))
+            {
+                $connection->send(
+                    implode(
+                        PHP_EOL,
+                        $config->response->submit->failure->encoding
+                    ) . PHP_EOL
+                );
+
+                $connection->close();
+            }
 
             // Check total message length limit allowed by KevaCoin protocol
             if (mb_strlen($connection->message) > 3074)
