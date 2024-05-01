@@ -58,3 +58,8 @@ WantedBy=multi-user.target
 2. `sudo systemctl daemon-reload` - reload systemd configuration
 3. `sudo systemctl enable npsapp` - enable `npsapp` service on system startup
 4. `sudo systemctl start npsapp` - start `npsapp` server
+
+## Use
+
+* `nc 127.0.0.1 1915`
+* `telnet 127.0.0.1 1915`
