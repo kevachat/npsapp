@@ -202,14 +202,14 @@ class Ratchet implements MessageComponentInterface
                     {
                         // Return success response
                         $connection->send(
-                            str_replace(
+                            str_ireplace(
                                 [
                                     '{name}',
                                     '{txid}'
                                 ],
                                 [
-                                    $this->_config->kevacoin->wallet->namespace,
-                                    $txid
+                                    (string) $this->_config->kevacoin->wallet->namespace,
+                                    (string) $txid
                                 ],
                                 implode(
                                     PHP_EOL,
