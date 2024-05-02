@@ -69,4 +69,7 @@ WantedBy=multi-user.target
 
 ## Servers
 
-* `[201:23b4:991a:634d:8359:4521:5576:15b7]:1915` - [Yggdrasil](https://github.com/yggdrasil-network) instance by [YGGverse](https://github.com/YGGverse)
+* Instance by [YGGverse](https://github.com/YGGverse)
+  * `[201:23b4:991a:634d:8359:4521:5576:15b7]:1915` - [Yggdrasil](https://github.com/yggdrasil-network)
+    * `kevachat.ygg:1915` - [Alfis DNS](https://github.com/Revertron/Alfis) alias
+    * `kevachat.duckdns.org:1915` - Internet proxy (IPv4)
