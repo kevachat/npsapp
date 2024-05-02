@@ -67,7 +67,7 @@ Like [NEX Protocol](https://nightfall.city/nex/info/specification.txt), NPS data
 
 ### Nginx
 
-```
+``` nginx.conf
 # /etc/nginx/nginx.conf
 
 stream {
