@@ -30,6 +30,25 @@ To read messages, use KevaChat [webapp](https://github.com/kevachat/webapp), [ge
 
 * `php src/app.php name.json` - where `name.json` argument is any config, placed at `config` folder
 
+## Proxy
+
+Like [NEX protocol](https://nightfall.city/nex/info/specification.txt), NPS data could be simply passed using any proxy server that support TCP forwarding
+
+### Nginx
+
+* `sudo nano /etc/nginx/nginx.conf`
+
+``` /etc/nginx/nginx.conf
+stream {
+        server {
+                listen 1915;
+                proxy_pass 127.0.0.1:1915;
+        }
+}
+```
+
+* `sudo service nginx restart`
+
 ### Autostart
 
 Launch server as the `systemd` service
