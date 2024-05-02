@@ -67,7 +67,7 @@ Like [NEX Protocol](https://nightfall.city/nex/info/specification.txt), NPS data
 
 ### Nginx
 
-* `sudo nano /etc/nginx/nginx.conf`
+1. `sudo nano /etc/nginx/nginx.conf`
 
 ``` /etc/nginx/nginx.conf
 stream {
@@ -78,7 +78,7 @@ stream {
 }
 ```
 
-* `sudo systemctl restart nginx`
+2. `sudo systemctl restart nginx`
 
 ## Clients
 
