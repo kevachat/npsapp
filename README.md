@@ -63,13 +63,13 @@ WantedBy=multi-user.target
 
 ## Proxy
 
-Like [NEX Protocol](https://nightfall.city/nex/info/specification.txt), NPS data could be simply passed using any proxy server that support TCP forwarding
+Like [NEX Protocol](https://nightfall.city/nex/info/specification.txt), NPS data could be simply forwarded using any proxy server that support TCP streams
 
 ### Nginx
 
-1. `sudo nano /etc/nginx/nginx.conf`
+```
+# /etc/nginx/nginx.conf
 
-``` /etc/nginx/nginx.conf
 stream {
         server {
                 listen 1915;
@@ -77,8 +77,6 @@ stream {
         }
 }
 ```
-
-2. `sudo systemctl restart nginx`
 
 ## Clients
 
