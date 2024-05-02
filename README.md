@@ -38,9 +38,9 @@ You can create as many servers as wanted by providing separated config for each 
 
 Following example require `npsapp` installed into the home directory of `npsapp` user (`useradd -m npsapp`)
 
-1. `sudo nano /etc/systemd/system/npsapp.service` - create new service:
-
 ``` npsapp.service
+# /etc/systemd/system/npsapp.service
+
 [Unit]
 After=network.target
 
@@ -57,9 +57,9 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-2. `sudo systemctl daemon-reload` - reload systemd configuration
-3. `sudo systemctl enable npsapp` - enable `npsapp` service on system startup
-4. `sudo systemctl start npsapp` - start `npsapp` server
+* `sudo systemctl daemon-reload` - reload systemd configuration
+* `sudo systemctl enable npsapp` - enable `npsapp` service on system startup
+* `sudo systemctl start npsapp` - start `npsapp` server
 
 ## Proxy
 
