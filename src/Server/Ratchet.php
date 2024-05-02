@@ -36,7 +36,7 @@ class Ratchet implements MessageComponentInterface
         // Init allowed chat rooms registry
         if ($namespaces = $this->_kevacoin->kevaListNamespaces())
         {
-            $i = 1; foreach ((array) $namespaces as $namespace)
+            foreach ((array) $namespaces as $namespace)
             {
                 // Skip system namespaces
                 if (str_starts_with($namespace['displayName'], '_'))
@@ -58,7 +58,7 @@ class Ratchet implements MessageComponentInterface
                 }
 
                 // Append room to the namespace registry
-                $this->_namespaces[$i++] = [
+                $this->_namespaces[] = [
                     'hash' => $namespace['namespaceId'],
                     'name' => $namespace['displayName']
                 ];
